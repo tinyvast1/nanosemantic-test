@@ -50,13 +50,13 @@ export function useChatBotAPI(uuid: string) {
     isError: isErrorSendMessage,
   } = useMutation({
     queryFn: (payload: ISendMessageRequestData) =>
-      chatBotAPI.sendMessage(payload).then((resp) => {
-        setHistoryMessageAndSaveInLocalStorage({
-          message: payload.text,
-          sender: ESenderType.CLIENT,
-        });
-        return resp;
-      }),
+      chatBotAPI.sendMessage(payload),
+    onMutate: (payload) => {
+      setHistoryMessageAndSaveInLocalStorage({
+        message: payload.text,
+        sender: ESenderType.CLIENT,
+      });
+    },
     onSuccess: (data) =>
       data.result.text.value &&
       setHistoryMessageAndSaveInLocalStorage({
@@ -82,4 +82,3 @@ export function useChatBotAPI(uuid: string) {
     isErrorSendMessage,
   };
 }
-
