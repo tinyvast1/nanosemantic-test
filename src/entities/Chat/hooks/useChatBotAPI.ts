@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ChatBotAPI } from '../api';
-import { ESenderType, ETypeEvent, IMessage } from '../types';
+import {
+  ESenderType,
+  ETypeEvent,
+  IMessage,
+  ISendMessageRequestData,
+} from '../types';
+import { welcomeMessage } from '../constants';
+import { useMutation, useQuery } from '@/shared/hooks';
 
 export function useChatBotAPI(uuid: string) {
   const [chatBotAPI] = useState(new ChatBotAPI(uuid));
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [historyMessage, setHistoryMessage] = useState(
     chatBotAPI.getHistoryMessageFromLocalStorage() ?? []
   );
@@ -18,77 +23,63 @@ export function useChatBotAPI(uuid: string) {
     });
   };
 
-  useEffect(() => {
-    if (!historyMessage.length) {
-      chatInit();
-    }
-  }, []);
+  const {
+    isLoading: isLoadingInit,
+    error: errorInit,
+    isError: isErrorInit,
+  } = useQuery({
+    payload: historyMessage,
+    queryFn: () =>
+      chatBotAPI.init().then(() =>
+        chatBotAPI.sendEvent({
+          euid: ETypeEvent.READY,
+        })
+      ),
+    onSuccess: () =>
+      setHistoryMessageAndSaveInLocalStorage({
+        message: welcomeMessage,
+        sender: ESenderType.BOT,
+      }),
+    enabled: !historyMessage.length,
+  });
 
-  const chatInit = () => {
-    setIsLoading(true);
-
-    chatBotAPI
-      .init()
-      .catch(() => setIsError(true))
-      .finally(() => {
-        setIsLoading(false);
-      })
-      .then(() => sendWelcomeMessage());
-  };
-
-  const sendWelcomeMessage = () => {
-    setIsLoading(true);
-
-    chatBotAPI
-      .sendEvent({
-        euid: ETypeEvent.READY,
-      })
-      .then(() => {
+  const {
+    mutateAsync: sendMessage,
+    isPending: isPendingSendMessage,
+    error: errorSendMessage,
+    isError: isErrorSendMessage,
+  } = useMutation({
+    queryFn: (payload: ISendMessageRequestData) =>
+      chatBotAPI.sendMessage(payload).then((resp) => {
         setHistoryMessageAndSaveInLocalStorage({
-          sender: ESenderType.BOT,
-          message: 'Здравствуйте.',
+          message: payload.text,
+          sender: ESenderType.CLIENT,
         });
-      })
-      .catch(() => {
-        setIsError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
-  const sendMessage = (message: string) => {
-    setIsLoading(true);
-
-    setHistoryMessageAndSaveInLocalStorage({
-      sender: ESenderType.CLIENT,
-      message,
-    });
-
-    chatBotAPI
-      .sendMessage({ text: message })
-      .then((res) => {
-        setHistoryMessageAndSaveInLocalStorage({
-          sender: ESenderType.BOT,
-          message: res.result.text.value,
-        });
-      })
-      .catch(() => setIsError(true))
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
+        return resp;
+      }),
+    onSuccess: (data) =>
+      data.result.text.value &&
+      setHistoryMessageAndSaveInLocalStorage({
+        message: data.result.text.value,
+        sender: ESenderType.BOT,
+      }),
+  });
 
   const resetChat = () => {
     setHistoryMessage([]);
-    chatInit();
+    chatBotAPI.setHistoryMessageInLocalStorage([]);
   };
 
   return {
-    isLoading,
-    isError,
     historyMessage,
-    sendMessage,
+    isLoadingInit,
+    errorInit,
+    isErrorInit,
     resetChat,
+    sendMessage,
+    isPendingSendMessage,
+    errorSendMessage,
+    isErrorSendMessage,
   };
 }
+

@@ -2,5 +2,8 @@
   --base-black: #000000;
   --base-white: #ffffff;
   --grey-0: rgb(238, 244, 245);
+  --grey-1: rgb(170, 184, 194);
+  --red-7: rgb(199, 23, 23);
   --base-radius: 5px;
 }
+

@@ -1,0 +1,17 @@
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  .icon {
+    width: 50%;
+  }
+}
+
+.error {
+  color: var(--red-7);
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+}
+

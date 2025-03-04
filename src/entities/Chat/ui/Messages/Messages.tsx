@@ -9,9 +9,10 @@ const Messages = () => {
 
   return (
     <div className={styles.messages}>
-      {historyMessage.map((item) => {
+      {historyMessage.map((item, i) => {
         return (
           <div
+            key={i}
             className={clsx(
               styles.message,
               item.sender === ESenderType.BOT ? styles.left : styles.right
@@ -26,3 +27,4 @@ const Messages = () => {
 };
 
 export default Messages;
+

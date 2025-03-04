@@ -21,14 +21,20 @@ export class ChatBotAPI extends ChatBotLocalStorage {
     });
 
     this.api.interceptors.request.use((req) => {
-      req.data.cuid = this.cuid;
+      if (this.cuid) {
+        req.data.cuid = this.cuid;
+      }
 
       return req;
     });
 
     this.api.interceptors.response.use((resp) => {
+      if ('error' in resp.data) {
+        throw resp;
+      }
+
       try {
-        const newCuid = resp.data.result.cuid;
+        const newCuid = resp.data.result?.cuid;
 
         if (newCuid && newCuid !== this.cuid) {
           this.setCUIDInLocalStorage(newCuid);
@@ -70,3 +76,4 @@ export class ChatBotAPI extends ChatBotLocalStorage {
     return resp.data;
   }
 }
+

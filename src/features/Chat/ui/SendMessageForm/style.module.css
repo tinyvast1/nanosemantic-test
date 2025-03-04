@@ -7,3 +7,7 @@
 .input {
   flex-grow: 1;
 }
+
+.error {
+  color: var(--red-7);
+}

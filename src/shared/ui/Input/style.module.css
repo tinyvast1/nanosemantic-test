@@ -1,4 +1,10 @@
 .input {
   border: 1px solid var(--base-black);
   border-radius: var(--base-radius);
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
+

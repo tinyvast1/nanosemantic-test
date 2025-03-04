@@ -1,8 +1,22 @@
 .button {
   height: 40px;
-  border: 1px solid var(--base-black);
   border-radius: var(--base-radius);
   padding-inline: 12px;
   background: var(--base-white);
   cursor: pointer;
+
+  &[data-variant='OUTLINE'] {
+    border: 1px solid var(--base-black);
+  }
+
+  &[data-variant='FIELD'] {
+    border: none;
+    background: var(--grey-1);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
+

@@ -1,7 +1,8 @@
-import { ChatBotProvider, Messages } from '@/entities/Chat';
+import { ChatBotProvider } from '@/entities/Chat';
 import { ResetChat, SendMessageForm } from '@/features/Chat';
 import { FC } from 'react';
 import styles from './style.module.css';
+import { Body } from '../Body';
 
 interface IChatProps {
   uuid: string;
@@ -16,7 +17,7 @@ const Chat: FC<IChatProps> = ({ uuid }) => {
             <ResetChat />
           </div>
           <div className={styles.bodyMessage}>
-            <Messages />
+            <Body />
           </div>
           <hr className={styles.divider} />
           <SendMessageForm />
@@ -27,3 +28,4 @@ const Chat: FC<IChatProps> = ({ uuid }) => {
 };
 
 export default Chat;
+
