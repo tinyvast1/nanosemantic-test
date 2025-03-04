@@ -1,0 +1,28 @@
+.chat {
+  position: relative;
+  width: 100%;
+
+  background: var(--grey-0);
+}
+
+.container {
+  --padding: 20px;
+  margin: 0 auto;
+  padding: var(--padding);
+  max-width: 1024px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bodyMessage {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.resetChat {
+  position: absolute;
+  top: var(--padding);
+  right: var(--padding);
+}

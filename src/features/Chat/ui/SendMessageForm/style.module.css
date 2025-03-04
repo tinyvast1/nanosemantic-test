@@ -1,0 +1,9 @@
+.form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.input {
+  flex-grow: 1;
+}

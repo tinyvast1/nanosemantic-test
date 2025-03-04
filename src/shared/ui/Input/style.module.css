@@ -1,0 +1,4 @@
+.input {
+  border: 1px solid var(--base-black);
+  border-radius: var(--base-radius);
+}
